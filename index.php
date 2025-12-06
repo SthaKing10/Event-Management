@@ -1,41 +1,24 @@
+<?php
+session_start();
+include 'connection.php';
+
+// Fetch all events
+$events_query = "SELECT * FROM events ORDER BY event_date ASC";
+$events_result = mysqli_query($con, $events_query);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Management System</title>
-
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
             background: #ffffff;
-        }
-
-        /* NAVIGATION BAR */
-        .navbar {
-            width: 100%;
-            background: #222;
-            padding: 15px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-        }
-
-        .navbar .logo {
-            color: white;
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        .navbar a {
-            color: white;
-            margin-left: 20px;
-            text-decoration: none;
-            font-size: 15px;
         }
 
         /* HERO SECTION */
@@ -86,6 +69,73 @@
 
         .btn:hover {
             background: #1d6fa5;
+        }
+
+        /* EVENTS SECTION */
+        .events {
+            padding: 60px 20px;
+            background: #f9f9f9;
+            text-align: center;
+        }
+
+        .events h2 {
+            font-size: 32px;
+            margin-bottom: 40px;
+        }
+
+        .event-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .event-box {
+            background: white;
+            width: 280px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .event-box:hover {
+            transform: translateY(-6px);
+        }
+
+        .event-box img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .event-content {
+            padding: 20px;
+        }
+
+        .event-content h3 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+        }
+
+        .event-content p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .event-content .buy-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 10px;
+            background: #28a745;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+
+        .event-content .buy-btn:hover {
+            background: #1f7f35;
         }
 
         /* FEATURES SECTION */
@@ -140,7 +190,6 @@
             padding: 12px 0;
         }
 
-        /* RESPONSIVE */
         @media (max-width: 768px) {
             .hero-content h1 {
                 font-size: 34px;
@@ -152,22 +201,28 @@
             .navbar a {
                 margin: 10px 0;
             }
+            .event-container {
+                flex-direction: column;
+                align-items: center;
+            }
         }
     </style>
+
+    <script>
+        // Scroll to events section when Get Started clicked
+        function goToEvents() {
+            document.getElementById('events').scrollIntoView({ behavior: 'smooth' });
+        }
+        // Confirm booking alert
+        function confirmBooking() {
+            return confirm('Are you sure you want to book this event?');
+        }
+    </script>
 </head>
 <body>
 
     <!-- NAVBAR -->
-    <div class="navbar">
-        <div class="logo">EventMS</div>
-        <div>
-            <a href="#home">Home</a>
-            <a href="#features">Features</a>
-            <a href="#about">About</a>
-            <a href="login.php">Login</a>
-            <a href="register.php">Register</a>
-        </div>
-    </div>
+    <?php include 'navbar.php'; ?>
 
     <!-- HERO SECTION -->
     <section class="hero" id="home">
@@ -175,7 +230,27 @@
         <div class="hero-content">
             <h1>Event Management System</h1>
             <p>Manage, organize and book events easily and efficiently.</p>
-            <a href="login.php" class="btn">Get Started</a>
+            <a href="javascript:void(0);" class="btn" onclick="goToEvents()">Get Started</a>
+        </div>
+    </section>
+
+    <!-- EVENTS -->
+    <section class="events" id="events">
+        <h2>Upcoming Events</h2>
+        <div class="event-container">
+            <?php while($event = mysqli_fetch_assoc($events_result)): ?>
+                <div class="event-box">
+                    <img src="uploads/event/<?php echo htmlspecialchars($event['image']); ?>" alt="Event Image">
+                    <div class="event-content">
+                        <h3><?php echo htmlspecialchars($event['title']); ?></h3>
+                        <p><strong>Date:</strong> <?php echo $event['event_date']; ?></p>
+                        <p><strong>Time:</strong> <?php echo $event['event_time']; ?></p>
+                        <p><strong>Location:</strong> <?php echo htmlspecialchars($event['location']); ?></p>
+                        <p><strong>Price:</strong> $<?php echo $event['price']; ?></p>
+                        <a href="book_event.php?event_id=<?php echo $event['event_id']; ?>" class="buy-btn" onclick="return confirmBooking();">Book Now</a>
+                    </div>
+                </div>
+            <?php endwhile; ?>
         </div>
     </section>
 
@@ -183,13 +258,10 @@
     <section class="features" id="features">
         <h2>Features</h2>
         <div class="feature-box-container">
-            
-
             <div class="feature-box">
                 <h3>Online Booking</h3>
                 <p>Users can book events from anywhere at anytime.</p>
             </div>
-
             <div class="feature-box">
                 <h3>User Dashboard</h3>
                 <p>Separate dashboard for users and administrators.</p>
@@ -209,7 +281,7 @@
 
     <!-- FOOTER -->
     <footer>
-        © 2025 Event Management System • Developed for TU BSc CSIT 4th Semester Project
+        © 2025 Sangyan and Susen
     </footer>
 
 </body>

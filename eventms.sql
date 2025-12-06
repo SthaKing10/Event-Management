@@ -1,36 +1,43 @@
-CREATE DATABASE eventms;
-USE eventms;
+-- Create the database
+CREATE DATABASE IF NOT EXISTS eventmgmt;
+USE eventmgmt;
 
--- USERS TABLE
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    fullname VARCHAR(100),
-    email VARCHAR(100) UNIQUE,
-    phone VARCHAR(20),
-    password VARCHAR(255),
+-- Create user table
+CREATE TABLE IF NOT EXISTS user (
+    user_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    phone_number VARCHAR(20) DEFAULT NULL,
+    password VARCHAR(255) NOT NULL,
     role ENUM('admin','user') DEFAULT 'user',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    user_image VARCHAR(250) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- ADMIN ACCOUNT (email: admin@gmail.com, password: admin123)
-INSERT INTO users(fullname,email,phone,password,role)
-VALUES ('Admin','admin@gmail.com','9800000000',MD5('admin123'),'admin');
+-- Create events table
+CREATE TABLE IF NOT EXISTS events (
+    event_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    description TEXT DEFAULT NULL,
+    event_date DATE NOT NULL,
+    event_time TIME NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    capacity INT(11) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    image VARCHAR(255) DEFAULT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- EVENTS TABLE
-CREATE TABLE events (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(200),
-    description TEXT,
-    date DATE,
-    venue VARCHAR(150),
-    seats INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- BOOKINGS TABLE
-CREATE TABLE bookings (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    event_id INT,
-    booking_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+-- Create event_bookings table
+CREATE TABLE IF NOT EXISTS event_bookings (
+    booking_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id INT(11) NOT NULL,
+    event_id INT(11) NOT NULL,
+    tickets INT(11) NOT NULL DEFAULT 1,
+    total_price DECIMAL(10,2) NOT NULL,
+    booking_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('pending','confirmed','cancelled') DEFAULT 'confirmed',
+    payment_status ENUM('paid','unpaid','failed','pending') DEFAULT 'pending',
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (event_id) REFERENCES events(event_id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

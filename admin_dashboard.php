@@ -16,11 +16,7 @@ if($_SESSION['user']['role']!="admin"){
         box-sizing:border-box;
     }
 
-    body{
-        font-family: Arial, Helvetica, sans-serif;
-        background:#f0f2f5;
-        padding:20px;
-    }
+    
 
     /* Container */
     .container{
@@ -29,6 +25,7 @@ if($_SESSION['user']['role']!="admin"){
         justify-content:center;
         align-items:flex-start;
         padding-top:40px;
+        margin-top: 15px;
     }
 
     .admin-box{
@@ -85,6 +82,7 @@ if($_SESSION['user']['role']!="admin"){
 </style>
 </head>
 <body>
+<?php include 'navbar.php';?>
 
 <div class="container">
     <div class="admin-box">
@@ -99,7 +97,7 @@ if($_SESSION['user']['role']!="admin"){
 
         <div class="box">
             <h2>View Bookings</h2>
-            <a href="booking_list.php">All Bookings</a>
+            <a href="admin_view_booking.php">All Bookings</a>
         </div>
 
     </div>

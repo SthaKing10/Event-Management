@@ -1,37 +1,45 @@
-
-
-
 <?php
-include 'db.php';
+session_start();
+include 'connection.php';
 
-$id = $_GET['id'];
+$id = intval($_GET['id']); // Ensure ID is numeric
 
-$query1 = "SELECT * FROM events WHERE id = $id";
-$result = mysqli_query($conn, $query1);
+// Fetch current event data
+$query1 = "SELECT * FROM events WHERE event_id = $id";
+$result = mysqli_query($con, $query1);
 $event = mysqli_fetch_assoc($result);
 
-if(isset($_POST['submit'])){
+if (!$event) {
+    die("Event not found.");
+}
 
-    $eventtitle = $_POST['eventtitle'];
+// Handle form submission
+if (isset($_POST['submit'])) {
+    // Sanitize inputs
+    $eventtitle = mysqli_real_escape_string($con, $_POST['eventtitle']);
     $eventdate = $_POST['eventdate'];
     $eventtime = $_POST['eventtime'];
-    $eventlocation = $_POST['eventlocation'];
-    $eventcapacity = $_POST['eventcapacity'];
-    $eventprice = $_POST['eventprice'];
-    $eventdescription = $_POST['description'];
+    $eventlocation = mysqli_real_escape_string($con, $_POST['eventlocation']);
+    $eventcapacity = intval($_POST['eventcapacity']);
+    $eventprice = floatval($_POST['eventprice']);
+    $eventdescription = mysqli_real_escape_string($con, $_POST['description']);
 
-    // If new image selected
-    if(!empty($_FILES['eventimage']['name'])) {
-        $imageName = $_FILES['eventimage']['name'];
+    // Handle image upload
+    if (!empty($_FILES['eventimage']['name'])) {
+        $imageName = basename($_FILES['eventimage']['name']);
         $imageTmp = $_FILES['eventimage']['tmp_name'];
-        $uploadPath = "image/" . $imageName;
+        $uploadFolder = "uploads/event/";
+        if (!is_dir($uploadFolder)) {
+            mkdir($uploadFolder, 0777, true); // create folder if not exists
+        }
+        $uploadPath = $uploadFolder . $imageName;
         move_uploaded_file($imageTmp, $uploadPath);
     } else {
-        // keep old image
-        $uploadPath = $event['image'];
+        // Keep old image
+        $imageName = $event['image'];
     }
 
-    // UPDATE query (FIXED)
+    // Update event in database
     $query = "UPDATE events SET 
                 title='$eventtitle',
                 description='$eventdescription',
@@ -40,36 +48,37 @@ if(isset($_POST['submit'])){
                 location='$eventlocation',
                 capacity='$eventcapacity',
                 price='$eventprice',
-                image='$uploadPath'
-              WHERE id=$id";
+                image='$imageName'
+              WHERE event_id=$id";
 
-    if(mysqli_query($conn, $query)){
+    if (mysqli_query($con, $query)) {
         echo "<script>alert('Event Updated Successfully'); window.location='admin_dashboard.php';</script>";
+        exit;
     } else {
-        echo "Error updating data: " . mysqli_error($conn);
+        echo "Error updating data: " . mysqli_error($con);
     }
 }
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style/formstyle.css">
     <title>Edit Event</title>
+    <link rel="stylesheet" href="style/formstyle.css">
 </head>
 <body>
 
-    <div class="login-container">
+<?php include 'navbar.php'; ?>
+
+<div class="container">
+    <div class="add-event-box">
         <h2>Edit Event</h2>
 
-        <form action="" method="POST" enctype="multipart/form-data">
-
+        <form action="" method="POST" enctype="multipart/form-data" class="form-container">
             <input type="text" name="eventtitle" required 
-                   value="<?php echo $event['title']; ?>">
+                   value="<?php echo htmlspecialchars($event['title']); ?>">
 
             <label>Event Date</label>
             <input type="date" name="eventdate" required 
@@ -80,7 +89,7 @@ if(isset($_POST['submit'])){
                    value="<?php echo $event['event_time']; ?>">
 
             <input type="text" name="eventlocation" required 
-                   value="<?php echo $event['location']; ?>">
+                   value="<?php echo htmlspecialchars($event['location']); ?>">
 
             <input type="number" name="eventcapacity" required 
                    value="<?php echo $event['capacity']; ?>">
@@ -91,13 +100,20 @@ if(isset($_POST['submit'])){
             <label>Event Image</label>
             <input type="file" name="eventimage">
 
+            <!-- Show current image -->
+            <?php 
+                $currentImage = "uploads/event/" . $event['image'];
+                if (!empty($event['image']) && file_exists($currentImage)): ?>
+                <img src="<?php echo $currentImage; ?>" alt="Event Image" style="width:100px; margin-top:10px;">
+            <?php endif; ?>
+
             <label>Description</label>
-            <textarea name="description" id="description"><?php echo $event['description']; ?></textarea>
+            <textarea name="description" id="description"><?php echo htmlspecialchars($event['description']); ?></textarea>
 
             <button type="submit" name="submit" class="btn">Update Event</button>
         </form>
-
     </div>
+</div>
 
 </body>
 </html>
