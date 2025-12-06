@@ -24,13 +24,13 @@ $events_result = mysqli_query($con, $events_query);
         /* HERO SECTION */
         .hero {
             height: 85vh;
-            background: url('https://images.unsplash.com/photo-1508609349937-5ec4ae374ebf?auto=format&fit=crop&w=1600&q=60') 
-            center/cover no-repeat;
+            background: url('uploads/event/Event1.jpg') center/cover no-repeat;
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
         }
+
 
         .overlay {
             position: absolute;
@@ -246,7 +246,7 @@ $events_result = mysqli_query($con, $events_query);
                         <p><strong>Date:</strong> <?php echo $event['event_date']; ?></p>
                         <p><strong>Time:</strong> <?php echo $event['event_time']; ?></p>
                         <p><strong>Location:</strong> <?php echo htmlspecialchars($event['location']); ?></p>
-                        <p><strong>Price:</strong> $<?php echo $event['price']; ?></p>
+                        <p><strong>Price:</strong> Rs.<?php echo $event['price']; ?></p>
                         <a href="book_event.php?event_id=<?php echo $event['event_id']; ?>" class="buy-btn" onclick="return confirmBooking();">Book Now</a>
                     </div>
                 </div>

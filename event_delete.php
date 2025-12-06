@@ -1,5 +1,5 @@
 <?php
-include 'db.php';
+include 'connection.php';
 
 if(isset($_GET['id'])){
 
@@ -8,12 +8,12 @@ if(isset($_GET['id'])){
     
 
     // Delete event record
-    $deleteQuery = "DELETE FROM events WHERE id = $id";
+    $deleteQuery = "DELETE FROM events WHERE event_id = $id";
 
-    if(mysqli_query($conn, $deleteQuery)){
+    if(mysqli_query($con, $deleteQuery)){
         echo "<script>alert('Event Deleted Successfully'); window.location='view_event.php';</script>";
     } else {
-        echo "Error deleting event: " . mysqli_error($conn);
+        echo "Error deleting event: " . mysqli_error($con);
     }
 
 } else {

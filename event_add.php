@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,16 +63,23 @@ if(isset($_POST['submit'])){
     $eventdescription = $_POST['description'];
 
     // IMAGE UPLOAD
-    $imageName = $_FILES['eventimage']['name'];
+    $imageName = time() . "_" . basename($_FILES['eventimage']['name']);
     $imageTmp = $_FILES['eventimage']['tmp_name'];
 
-    $uploadPath = "image/" . $imageName;
+    // server path for uploading
+    $uploadDir = __DIR__ . "/uploads/event/";
+    $uploadPath = $uploadDir . $imageName;
 
-    move_uploaded_file($imageTmp, $uploadPath);
+    // relative path for database
+    $imageDB =  $imageName;
 
-    // SQL INSERT
+    if(!move_uploaded_file($imageTmp, $uploadPath)){
+        die("Image upload failed!");
+    }
+
+    // SQL INSERT (correct one)
     $query = "INSERT INTO events (title, description, event_date, event_time, location, capacity, price, image)
-              VALUES ('$eventtitle', '$eventdescription', '$eventdate', '$eventtime', '$eventlocation', '$eventcapacity', '$eventprice', '$uploadPath')";
+              VALUES ('$eventtitle', '$eventdescription', '$eventdate', '$eventtime', '$eventlocation', '$eventcapacity', '$eventprice', '$imageDB')";
 
     if(mysqli_query($con, $query)){
         echo "<script>alert('Event Added Successfully'); window.location='admin_dashboard.php';</script>";
@@ -78,4 +88,3 @@ if(isset($_POST['submit'])){
     }
 }
 ?>
-

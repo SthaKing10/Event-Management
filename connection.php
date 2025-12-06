@@ -1,5 +1,5 @@
 <?php
-$con = mysqli_connect("localhost","suman","suman123","eventmgmt");
+$con = mysqli_connect("localhost","sangyan","sthaking","eventmgmt");
 
 if(!$con){
     die("Database Connection Failed!");
