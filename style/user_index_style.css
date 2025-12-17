@@ -1,0 +1,192 @@
+body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            height: 85vh;
+            background: url('https://images.unsplash.com/photo-1508609349937-5ec4ae374ebf?auto=format&fit=crop&w=1600&q=60') 
+            center/cover no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.55);
+        }
+
+        .hero-content {
+            position: relative;
+            text-align: center;
+            color: white;
+            max-width: 700px;
+            padding: 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            margin-top: 20px;
+            background: #3498db;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background: #1d6fa5;
+        }
+
+        /* EVENTS SECTION */
+        .events {
+            padding: 60px 20px;
+            background: #f9f9f9;
+            text-align: center;
+        }
+
+        .events h2 {
+            font-size: 32px;
+            margin-bottom: 40px;
+        }
+
+        .event-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .event-box {
+            background: white;
+            width: 280px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .event-box:hover {
+            transform: translateY(-6px);
+        }
+
+        .event-box img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .event-content {
+            padding: 20px;
+        }
+
+        .event-content h3 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+        }
+
+        .event-content p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .event-content .buy-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 10px;
+            background: #28a745;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+
+        .event-content .buy-btn:hover {
+            background: #1f7f35;
+        }
+
+        /* FEATURES SECTION */
+        .features {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .features h2 {
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+
+        .feature-box-container {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .feature-box {
+            width: 280px;
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-6px);
+        }
+
+        /* ABOUT SECTION */
+        .about {
+            background: #f2f2f2;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .about p {
+            max-width: 800px;
+            margin: auto;
+            font-size: 17px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #222;
+            color: white;
+            text-align: center;
+            padding: 12px 0;
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 34px;
+            }
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+            }
+            .navbar a {
+                margin: 10px 0;
+            }
+            .event-container {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
