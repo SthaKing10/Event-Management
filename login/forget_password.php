@@ -3,14 +3,16 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
 include '../include/connection.php';
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $error_msg = '';
 
 if(isset($_POST['submit'])){
     $email = mysqli_real_escape_string($con,$_POST['email']);
     $result = mysqli_query($con,"select *from user where(email = '$email') limit 1");
     if(mysqli_num_rows($result)==1){
-        session_start();
+        
         $_SESSION['reset_email'] = $email;
         $otp = rand(100000, 999999);
         if(mysqli_query($con,"Insert into otp(email,otp) values('$email','$otp')")){

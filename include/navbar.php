@@ -1,12 +1,18 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 include 'connection.php';
 $base_url = "/Event-Management/";
 $user_id = $_SESSION['user_id'] ?? null;
 
+
 if ($user_id) {
     $user = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM user WHERE user_id='$user_id'"));
     $role = $user['role'];
+}
+else{
+    $role = '';
 }
 ?>
 
