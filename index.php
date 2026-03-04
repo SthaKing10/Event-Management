@@ -87,7 +87,7 @@ $events_result = mysqli_query($con, $events_query);
 
     <!-- FOOTER -->
     <footer>
-        © 2025 Sangyan and Susen
+        © 2025 Sangyan and Susenn
     </footer>
 
 </body>
