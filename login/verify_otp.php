@@ -11,7 +11,7 @@ if(isset($_POST['submit'])){
 
     if(mysqli_num_rows($result) == 0){
         mysqli_query($con, "delete from otp where(email = '$email')");
-        echo "<p style = 'color:red'>OTP Expired Feri Patha muji <br><br><button><a href='forget_password.php'>Hya Bata</button></a></p>";
+        echo "<p style = 'color:red'>OTP Expired Feri Patha  <br><br><button><a href='forget_password.php'>Hya Bata</button></a></p>";
         exit();
     }
     $row = mysqli_fetch_assoc($result);
@@ -34,6 +34,7 @@ if(isset($_POST['submit'])){
         mysqli_query($con,"update otp set attempt = attempt +1 where id = {$row['id']} and email = '$email'");
         $remaning_attempt = $max_attempt - ($row['attempt'] + 1);
         $error_msg = "Invalid OTP. Remaining attempts: ".$remaning_attempt;
+        $_SESSION['tost'] = ["message"=>$error_msg,"type"=>"invalid"];
         
     }
 
@@ -51,9 +52,30 @@ if(isset($_POST['submit'])){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verify Otp</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../Tost_Message/style.css">
+    <script src="../Tost_Message/script.js"></script>
     <link rel="stylesheet" href="../style/formstyle.css">
 </head>
 <body>
+    <div id="tostBox"></div>
+
+    <?php
+
+    if(!empty($_SESSION['tost'])){ 
+       $tost = $_SESSION['tost']; 
+        ?>
+    <script>
+        showTost("<?= $tost['message'] ?>","<?= $tost['type'] ?>");
+    </script>
+
+   <?php
+   unset($_SESSION['tost']);
+
+}
+
+
+    ?>
     <div class="container">
         <form action="" method="post">
         <div class="form-box">
@@ -69,3 +91,10 @@ if(isset($_POST['submit'])){
     </div>
 </body>
 </html>
+
+<script>
+    fetch('send_otp.php')
+    .then(response=>response.text())
+    .then(data=>console.log("Mail Sent",data))
+    .catch(error=>console.error("Error:",error));
+</script>

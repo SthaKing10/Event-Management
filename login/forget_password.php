@@ -1,7 +1,5 @@
 <?php
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-use PHPMailer\PHPMailer\SMTP;
+
 include '../include/connection.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -11,52 +9,22 @@ $error_msg = '';
 if(isset($_POST['submit'])){
     $email = mysqli_real_escape_string($con,$_POST['email']);
     $result = mysqli_query($con,"select *from user where(email = '$email') limit 1");
+
     if(mysqli_num_rows($result)==1){
-        
         $_SESSION['reset_email'] = $email;
-        $otp = rand(100000, 999999);
-        if(mysqli_query($con,"Insert into otp(email,otp) values('$email','$otp')")){
-            
-        
-
-        require '../PHPMailer/Exception.php';
-        require '../PHPMailer/PHPMailer.php';
-        require '../PHPMailer/SMTP.php';
-
-        $mail = new PHPMailer(true);
-
-        try {
-            $mail->SMTPDebug = SMTP::DEBUG_SERVER; // turn ON for testing
-            $mail->isSMTP();
-            $mail->Host       = 'smtp.gmail.com';
-            $mail->SMTPAuth   = true;
-            $mail->Username   = 'hellowitsmesuman123@gmail.com';
-            $mail->Password   = 'aegisenykdqryclf'; // APP PASSWORD
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-            $mail->Port       = 465;
-
-            $mail->setFrom('hellowitsmesuman123@gmail.com', 'Event Management System');
-            $mail->addAddress($email);
-
-            $mail->isHTML(true);
-            $mail->Subject = 'Verify Your OTP';
-            $mail->Body    = "<p>Reset Your Password from the given otp:</p><br><h2>$otp</h2><br>the otp is expired with in 5 minutes";
-
-            $mail->send();
+            $_SESSION['tost'] = ["message"=>"OTP Successfully send to your email","type"=>"success"];
             header('location:verify_otp.php');
-        } 
-        catch (Exception $e) {
-            echo "Mailer Error: {$mail->ErrorInfo}";
+            exit();
         }
-
-            
-        }
-    }
+    
     else
         {
-           $error_msg =  "Invalid email please register";
+            $_SESSION['tost'] = ["message"=>"Email is not register in our system, try with diffrent email","type"=>"error"];
+            header('location:forget_password.php');
+            exit();
         }
-}
+    }     
+
 
 ?>
 
@@ -65,12 +33,32 @@ if(isset($_POST['submit'])){
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../Tost_Message/style.css">
+    <script src="../Tost_Message/script.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forget Password</title>
     <link rel="stylesheet" href="../style/formstyle.css">
 </head>
 <body>
+     <div id="tostBox"></div>
+
+    <?php 
+        session_start();
+        if(!empty($_SESSION['tost'])){
+            $tost = $_SESSION['tost']; ?>
+
+            <script>
+                showTost("<?= $tost['message'] ?>","<?= $tost['type'] ?>");
+            </script>
+        <?php
+        unset($_SESSION['tost']);
+
+        }
+
+
+    ?>
     <div class="container">
     <form method="post">
         <div class="form-box">

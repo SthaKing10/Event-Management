@@ -4,8 +4,11 @@ include '../include/connection.php';
 include '../include/functions.php';
 
 // USER MUST BE LOGGED IN
-check_login();
-
+if(!isset($_SESSION['user_id'])){
+    $_SESSION['tost']= ["message"=>"Login is require to book the evnet", "type"=>"invalid"];
+    header('location:../login/login.php');
+    exit();
+}
 // If event_id is missing
 if (!isset($_GET['event_id'])) {
     die("Invalid event ID.");

@@ -7,7 +7,10 @@ if($_SESSION['user']['role']!="admin"){
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../Tost_Message/style.css">
+    <script src="../Tost_Message/script.js"></script>
+    <title>Admin Dashboard</title>
 
 <style>
     *{
@@ -82,7 +85,24 @@ if($_SESSION['user']['role']!="admin"){
 </style>
 </head>
 <body>
-<?php include '../include/navbar.php';?>
+        <div id="tostBox"></div>
+
+<?php include '../include/navbar.php';
+if(!empty($_SESSION['tost'])){
+    $tost = $_SESSION['tost']; ?>
+
+    <script>
+        showTost("<?= $tost['message'] ?>","<?= $tost['type'] ?>");
+    </script>
+<?php
+unset($_SESSION['tost']);
+
+}
+
+
+?>
+
+
 
 <div class="container">
     <div class="admin-box">

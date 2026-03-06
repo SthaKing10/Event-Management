@@ -15,17 +15,18 @@ if(isset($_POST['change_password'])){
         $msg_error = "Conform Password Doesn't Match with New Password";
     }
     else{
-
-        $hashed_password = md5($conform_password);
+        $hashed_password = password_hash($conform_password,PASSWORD_DEFAULT);
         $updatequery = "update user set password ='$hashed_password' where(email ='$email')";
         if(mysqli_query($con,$updatequery)){
-            $sucess_msg = "Password update sucessfully"."<a href='login.php'>Login here</a>";
+            $_SESSION['tost'] = ['message'=>"Password Changed Successfully,Login Here",'type'=>"success"];
             unset($_SESSION['otp-verified']);
             unset($_SESSION['reset_email']);
+            header('location:login.php');
         }
         else
         {
-            $msg_error =  "Problem in Password update";
+            $_SESSION['tost'] = ['message'=>"Problem in Password update",'type'=>"error"];
+            header('location:login.php');
         }
     }
 

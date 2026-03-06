@@ -10,6 +10,9 @@ $events_result = mysqli_query($con, $events_query);
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="Tost_Message/style.css">
+    <script src="Tost_Message/script.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Management System</title>
@@ -27,6 +30,21 @@ $events_result = mysqli_query($con, $events_query);
 </head>
 <body>
 
+<div id="tostBox"></div>
+<?php 
+        if(!empty($_SESSION['tost'])){
+            $tost = $_SESSION['tost']; ?>
+
+            <script>
+                showTost("<?= $tost['message'] ?>","<?= $tost['type'] ?>");
+            </script>
+        <?php
+        unset($_SESSION['tost']);
+
+        }
+
+
+    ?>
     <!-- NAVBAR -->
     <?php include 'include/navbar.php'; ?>
 
